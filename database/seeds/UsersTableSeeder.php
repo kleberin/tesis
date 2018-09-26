@@ -13,14 +13,14 @@ class UsersTableSeeder extends Seeder
     {
         DB::table('users')->insert([
             'name' => 'torre',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'torre@gmail.com',
             'password' => bcrypt('torre'),
             'role_id' => 3
         ]);
 
         DB::table('users')->insert([
             'name' => 'supervisor1',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'super1@gmail.com',
             'password' => bcrypt('super'),
             'role_id' => 2,
             'dealer_id' => 1
@@ -28,7 +28,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'tecnico1',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'tec1@gmail.com',
             'password' => bcrypt('tecnico'),
             'role_id' => 1,
             'dealer_id' => 1,
@@ -37,7 +37,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'tecnico2',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'tec2@gmail.com',
             'password' => bcrypt('tecnico'),
             'role_id' => 1,
             'dealer_id' => 1,
@@ -46,7 +46,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'supervisor2',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'super2@gmail.com',
             'password' => bcrypt('super'),
             'role_id' => 2,
             'dealer_id' => 2
@@ -54,7 +54,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'tecnico3',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'tec3@gmail.com',
             'password' => bcrypt('tecnico'),
             'role_id' => 1,
             'dealer_id' => 2,
@@ -63,7 +63,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'tecnico4',
-            'email' => str_random(10).'@gmail.com',
+            'email' => 'tec4@gmail.com',
             'password' => bcrypt('tecnico'),
             'role_id' => 1,
             'dealer_id' => 2,
