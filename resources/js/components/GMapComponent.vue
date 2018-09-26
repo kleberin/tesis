@@ -54,13 +54,13 @@
             }
         },
         mounted() {
-            axios.default.get('/klever/public/home/live')
+            axios.default.get('home/live')
                 .then(response => {
                     for (var i = 0; i < response.data.length; i++) {
                         this.markers.push({
                             position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                             icon: {
-                                url: '/klever/public/img/building.png',
+                                url: 'img/building.png',
                             },
                             name: response.data[i].name,
                             address: response.data[i].address

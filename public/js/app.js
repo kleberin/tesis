@@ -50392,12 +50392,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     mounted: function mounted() {
         var _this = this;
 
-        axios.default.get('/klever/public/home/live').then(function (response) {
+        axios.default.get('home/live').then(function (response) {
             for (var i = 0; i < response.data.length; i++) {
                 _this.markers.push({
                     position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                     icon: {
-                        url: '/klever/public/img/building.png'
+                        url: 'img/building.png'
                     },
                     name: response.data[i].name,
                     address: response.data[i].address
