@@ -6,8 +6,15 @@
  */
 
 require('./bootstrap');
+import * as VueGoogleMaps from "vue2-google-maps"
 
 window.Vue = require('vue');
+
+Vue.use(VueGoogleMaps, {
+    load: {
+        key: "AIzaSyCMeWeb5KUZk37Q1Puu2s_1qrka2B5CLhA"
+    }
+});
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -15,7 +22,7 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('search-component', require('./components/SearchComponent.vue'));
+Vue.component('gmap-component', require('./components/GMapComponent.vue'));
 
 const app = new Vue({
     el: '#app'
