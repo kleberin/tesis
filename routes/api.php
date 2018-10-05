@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth.basic.once')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('auth.basic.once')
+    ->post('/location', 'TrackingController@postLocationUpdates')
+    ->name('locations.post');
