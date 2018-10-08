@@ -20,3 +20,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/home/live', 'HomeController@getLiveData')->name('home-live');
+
+Route::get('/tracking/live', 'TrackingController@getLiveData')->name('tracking.live');

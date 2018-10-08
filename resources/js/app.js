@@ -7,6 +7,7 @@
 
 require('./bootstrap');
 import * as VueGoogleMaps from "vue2-google-maps"
+window.moment = require('moment');
 
 window.Vue = require('vue');
 

@@ -69,13 +69,32 @@
                 })
                 .catch(error => {
                     console.log(error)
+                });
+            axios.default.get('tracking/live')
+                .then(response => {
+                    for (var i = 0; i < response.data.length; i++) {
+                        this.markers.push({
+                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                            icon: {
+                                url: 'img/tecnician.png'
+                            },
+                            name: response.data[i].name,
+                            last_location: moment.utc(response.data[i].reported_at)
+                        })
+                    }
                 })
+              .catch(error => {
+                  console.log(error)
+              })
         },
         methods: {
             toggleInfoWindow: function(marker, index) {
                 this.infoWindowPos = marker.position;
-                this.infoOptions.content = '<div>' + marker.name + '</div>'
-                    + '<div>' + marker.address + '</div>';
+                this.infoOptions.content = '<div>' + marker.name + '</div>';
+                if (marker.address !== undefined)
+                    this.infoOptions.content += '<div>' + marker.address + '</div>';
+                if (marker.last_location !== undefined)
+                    this.infoOptions.content += '<div>' + marker.last_location.local().format('YYYY-MM-DD HH:mm:ss') + '</div>';
 
                 //check if its the same marker that was selected if yes toggle
                 if (this.currentMarkerIdx === index) {
