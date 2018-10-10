@@ -23,7 +23,12 @@
                 <div class="card-header">Búsqueda</div>
 
                 <div class="card-body">
-                    You are logged in!
+                    <component
+                            v-bind:is="currentComponent"
+                            v-bind="currentComponentProps"
+                            v-on:show-history="loadHistory"
+                            v-on:pop-history="popHistory">
+                    </component>
                 </div>
             </div>
         </div>
@@ -31,6 +36,7 @@
 </template>
 
 <script>
+    import technicianComponent from './TechnicianComponent.vue';
     export default {
         data() {
             return {
@@ -50,8 +56,14 @@
                 },
                 infoWindowPos: null,
                 infoWinOpen: false,
-                currentMarkerIdx: null
+                currentMarkerIdx: null,
+                currentComponent: null,
+                currentComponentProps: {},
+                markersStack: []
             }
+        },
+        components: {
+          technicianComponent
         },
         mounted() {
             axios.default.get('home/live')
@@ -62,6 +74,7 @@
                             icon: {
                                 url: 'img/building.png',
                             },
+                            type: 'dealer',
                             name: response.data[i].name,
                             address: response.data[i].address
                         })
@@ -78,6 +91,8 @@
                             icon: {
                                 url: 'img/tecnician.png'
                             },
+                            type: 'technician',
+                            id: response.data[i].user_id,
                             name: response.data[i].name,
                             last_location: moment.utc(response.data[i].reported_at)
                         })
@@ -90,7 +105,9 @@
         methods: {
             toggleInfoWindow: function(marker, index) {
                 this.infoWindowPos = marker.position;
-                this.infoOptions.content = '<div>' + marker.name + '</div>';
+                this.infoOptions.content = '';
+                if (marker.name !== undefined)
+                    this.infoOptions.content = '<div>' + marker.name + '</div>';
                 if (marker.address !== undefined)
                     this.infoOptions.content += '<div>' + marker.address + '</div>';
                 if (marker.last_location !== undefined)
@@ -104,7 +121,39 @@
                 else {
                     this.infoWinOpen = true;
                     this.currentMarkerIdx = index;
+                    switch (marker.type) {
+                        case 'dealer':
+                            this.currentComponent = null;
+                            break;
+                        case 'technician':
+                            this.currentComponentProps = { 'id': marker.id };
+                            this.currentComponent = technicianComponent;
+                            break;
+                    }
                 }
+            },
+            loadHistory(userId) {
+                axios.default.get('tracking/' + userId + '/history')
+                    .then(response => {
+                        console.log(response);
+                        this.markersStack.push(this.markers);
+                        this.infoWinOpen = false;
+                        this.markers = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.markers.push({
+                                position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                                type: 'history',
+                                last_location: moment.utc(response.data[i].reported_at)
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            },
+            popHistory() {
+                this.infoWinOpen = false;
+                this.markers = this.markersStack.pop();
             }
         }
     }

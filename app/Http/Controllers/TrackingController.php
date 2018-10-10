@@ -65,12 +65,32 @@ class TrackingController extends Controller
             ->select('user_id', DB::raw('MAX(id) as id'))
             ->groupBy('user_id');
         $data = $this->trackingRepo
-            ->select('trackings.id', 'users.name', 'trackings.latitude', 'trackings.longitude', 'trackings.reported_at')
+            ->select('trackings.user_id', 'users.name', 'trackings.latitude', 'trackings.longitude', 'trackings.reported_at')
             ->join('users', 'trackings.user_id', '=', 'users.id')
             ->joinSub($lastTracking, 't1', function ($join) {
                 $join->on('trackings.id', '=', 't1.id');
             })
             ->where('reported_at', '>=', $today)
+            ->get();
+        return response()->json($data);
+    }
+
+    /**
+     * @param int $userId
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getTrackingData(int $userId)
+    {
+        $from = Carbon::today('America/Guayaquil');
+        $from->addHours(5);
+        $to = Carbon::today('America/Guayaquil');
+        $to->addHours(29);
+        $data = $this->trackingRepo
+            ->select('id', 'latitude', 'longitude', 'reported_at')
+            ->where('user_id', $userId)
+            ->where('reported_at', '>=', $from)
+            ->where('reported_at', '<=', $to)
             ->get();
         return response()->json($data);
     }
