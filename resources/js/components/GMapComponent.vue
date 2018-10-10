@@ -11,6 +11,10 @@
                     :icon="m.icon"
                     @click="toggleInfoWindow(m, index)">
             </gmap-marker>
+            <gmap-polyline
+                    v-if="path.length > 0"
+                    :path="path">
+            </gmap-polyline>
             <gmap-info-window
                     :options="infoOptions"
                     :position="infoWindowPos"
@@ -47,6 +51,7 @@
                     streetViewControl: false
                 },
                 markers: [],
+                path: [],
                 infoOptions: {
                     pixelOffset: {
                         width: 0,
@@ -145,6 +150,7 @@
                                 type: 'history',
                                 last_location: moment.utc(response.data[i].reported_at)
                             });
+                            this.path.push({ lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) });
                         }
                     })
                     .catch(error => {
@@ -154,6 +160,7 @@
             popHistory() {
                 this.infoWinOpen = false;
                 this.markers = this.markersStack.pop();
+                this.path = [];
             }
         }
     }

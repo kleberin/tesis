@@ -91,6 +91,7 @@ class TrackingController extends Controller
             ->where('user_id', $userId)
             ->where('reported_at', '>=', $from)
             ->where('reported_at', '<=', $to)
+            ->orderBy('id')
             ->get();
         return response()->json($data);
     }
