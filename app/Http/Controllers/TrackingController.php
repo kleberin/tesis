@@ -59,7 +59,7 @@ class TrackingController extends Controller
      */
     public function getLiveData()
     {
-        $today = Carbon::today();
+        $today = Carbon::today('America/Guayaquil');
         $today->addHours(5);
         $lastTracking = DB::table('trackings')
             ->select('user_id', DB::raw('MAX(id) as id'))
