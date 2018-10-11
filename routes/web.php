@@ -26,3 +26,5 @@ Route::get('/tracking/live', 'TrackingController@getLiveData')->name('tracking.l
 Route::get('/tracking/{userId}/history', 'TrackingController@getTrackingData')->name('tracking.data');
 
 Route::get('/technician/{id}', 'TechnicianController@index')->name('technician.index');
+
+Route::get('/work-order/live', 'WorkOrderController@getLiveData')->name('workOrder.live');

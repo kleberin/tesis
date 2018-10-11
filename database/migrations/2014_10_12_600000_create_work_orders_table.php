@@ -19,7 +19,7 @@ class CreateWorkordersTable extends Migration
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->string('description');
             $table->string('status');
-            $table->date('date')->nullable();
+            $table->timestamp('date')->nullable();
             $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

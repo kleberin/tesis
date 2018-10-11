@@ -24,9 +24,9 @@
         </gmap-map>
         <div class="col-md-4 floating">
             <div class="card card-default">
-                <div class="card-header">Búsqueda</div>
+                <div class="card-header">{{cardTitle}}</div>
 
-                <div class="card-body">
+                <div class="card-body" v-if="currentComponent != null">
                     <component
                             v-bind:is="currentComponent"
                             v-bind="currentComponentProps"
@@ -44,6 +44,7 @@
     export default {
         data() {
             return {
+                cardTitle: 'En Vivo',
                 center: {lat: -0.202499, lng: -78.499637},
                 options: {
                     mapTypeControl: false,
@@ -103,9 +104,27 @@
                         })
                     }
                 })
-              .catch(error => {
-                  console.log(error)
-              })
+                .catch(error => {
+                    console.log(error)
+                });
+            axios.default.get('work-order/live')
+                .then(response => {
+                    for (var i = 0; i < response.data.length; i++) {
+                        this.markers.push({
+                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                            icon: {
+                                url: 'img/home.png'
+                            },
+                            type: 'work_order',
+                            id: response.data[i].id,
+                            name: response.data[i].status,
+                            date: moment.utc(response.data[i].date)
+                        })
+                    }
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         },
         methods: {
             toggleInfoWindow: function(marker, index) {
@@ -117,6 +136,8 @@
                     this.infoOptions.content += '<div>' + marker.address + '</div>';
                 if (marker.last_location !== undefined)
                     this.infoOptions.content += '<div>' + marker.last_location.local().format('YYYY-MM-DD HH:mm:ss') + '</div>';
+                if (marker.date !== undefined)
+                    this.infoOptions.content += '<div>' + marker.date.local().format('YYYY-MM-DD HH:mm:ss') + '</div>';
 
                 //check if its the same marker that was selected if yes toggle
                 if (this.currentMarkerIdx === index) {
@@ -128,16 +149,23 @@
                     this.currentMarkerIdx = index;
                     switch (marker.type) {
                         case 'dealer':
+                            this.cardTitle = 'En Vivo';
                             this.currentComponent = null;
                             break;
                         case 'technician':
+                            this.cardTitle = 'Técnico';
                             this.currentComponentProps = { 'id': marker.id };
                             this.currentComponent = technicianComponent;
+                            break;
+                        case 'work_order':
+                            this.cardTitle = 'En Vivo';
+                            this.currentComponent = null;
                             break;
                     }
                 }
             },
             loadHistory(userId) {
+                this.cardTitle = 'Historial';
                 axios.default.get('tracking/' + userId + '/history')
                     .then(response => {
                         console.log(response);
@@ -158,6 +186,7 @@
                     })
             },
             popHistory() {
+              this.cardTitle = 'Técnico';
                 this.infoWinOpen = false;
                 this.markers = this.markersStack.pop();
                 this.path = [];
