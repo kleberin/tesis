@@ -31,7 +31,8 @@
                             v-bind:is="currentComponent"
                             v-bind="currentComponentProps"
                             v-on:show-history="loadHistory"
-                            v-on:pop-history="popHistory">
+                            v-on:pop-history="popHistory"
+                            v-on:show-created="loadCreated">
                     </component>
                 </div>
             </div>
@@ -41,6 +42,8 @@
 
 <script>
     import technicianComponent from './TechnicianComponent.vue';
+    import optionsComponent from './Options.vue';
+
     export default {
         data() {
             return {
@@ -63,13 +66,14 @@
                 infoWindowPos: null,
                 infoWinOpen: false,
                 currentMarkerIdx: null,
-                currentComponent: null,
-                currentComponentProps: {},
+                currentComponentProps: { 'state': 'live' },
+                currentComponent: optionsComponent,
                 markersStack: []
             }
         },
         components: {
-          technicianComponent
+          technicianComponent,
+          optionsComponent
         },
         mounted() {
             axios.default.get('home/live')
@@ -78,7 +82,7 @@
                         this.markers.push({
                             position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                             icon: {
-                                url: 'img/building.png',
+                                url: 'img/building_blue.png',
                             },
                             type: 'dealer',
                             name: response.data[i].name,
@@ -110,10 +114,16 @@
             axios.default.get('work-order/live')
                 .then(response => {
                     for (var i = 0; i < response.data.length; i++) {
+                        let icon_url
+                        // TODO seleccionar color
+                        // if (response.data[i].dealer_id) {
+                        //     icon_url = 
+                        // }
+                        icon_url = 'img/home_yellow.png'
                         this.markers.push({
                             position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                             icon: {
-                                url: 'img/home.png'
+                                url: icon_url
                             },
                             type: 'work_order',
                             id: response.data[i].id,
@@ -150,7 +160,8 @@
                     switch (marker.type) {
                         case 'dealer':
                             this.cardTitle = 'En Vivo';
-                            this.currentComponent = null;
+                            this.currentComponentProps = { 'state': 'live' };
+                            this.currentComponent = optionsComponent;
                             break;
                         case 'technician':
                             this.cardTitle = 'Técnico';
@@ -159,8 +170,13 @@
                             break;
                         case 'work_order':
                             this.cardTitle = 'En Vivo';
-                            this.currentComponent = null;
+                            this.currentComponentProps = { 'state': 'live' };
+                            this.currentComponent = optionsComponent;
                             break;
+                        case 'work_order_c':
+                            this.cardTitle = 'Creadas';
+                            this.currentComponentProps = { 'state': 'created' };
+                            this.currentComponent = optionsComponent;
                     }
                 }
             },
@@ -185,11 +201,36 @@
                         console.log(error);
                     })
             },
-            popHistory() {
-              this.cardTitle = 'Técnico';
+            popHistory(title) {
+                title = title != undefined ? 'Técnico' : title;
+                this.cardTitle = title;
                 this.infoWinOpen = false;
                 this.markers = this.markersStack.pop();
                 this.path = [];
+            },
+            loadCreated() {
+                this.cardTitle = 'Creadas';
+                this.currentComponentProps = { 'state': 'created' }
+                axios.default.get('work-order/created')
+                    .then(response => {
+                        this.markersStack.push(this.markers);
+                        this.markers = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                        this.markers.push({
+                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                            icon: {
+                                url: 'img/home_yellow.png'
+                            },
+                            type: 'work_order_c',
+                            id: response.data[i].id,
+                            name: response.data[i].status,
+                            date: moment.utc(response.data[i].date)
+                        })
+                    }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
             }
         }
     }

@@ -18,6 +18,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/upload-work-order', 'HomeController@upload')->name('upload');
 
 Route::get('/home/live', 'HomeController@getLiveData')->name('home-live');
 
@@ -28,3 +29,5 @@ Route::get('/tracking/{userId}/history', 'TrackingController@getTrackingData')->
 Route::get('/technician/{id}', 'TechnicianController@index')->name('technician.index');
 
 Route::get('/work-order/live', 'WorkOrderController@getLiveData')->name('workOrder.live');
+
+Route::get('/work-order/created', 'WorkOrderController@getCreatedData')->name('workOrder.created');

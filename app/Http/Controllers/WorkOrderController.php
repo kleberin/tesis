@@ -40,4 +40,18 @@ class WorkOrderController extends Controller
             ->get();
         return response()->json($data);
     }
+
+    /**
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getCreatedData()
+    {
+        $data = $this->workOrderRepo
+            ->join('customers', 'customers.id', 'work_orders.customer_id')
+            ->select('work_orders.id', 'work_orders.status', 'work_orders.date', 'customers.latitude', 'customers.longitude')
+            ->where('status', 'Creada')
+            ->get();
+        return response()->json($data);
+    }
 }
