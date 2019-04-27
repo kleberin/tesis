@@ -19,6 +19,14 @@ use Illuminate\Database\Eloquent\Model;
 class WorkOrder extends Model
 {
     //
+    protected $fillable = [
+        'id',
+        'customer_id',
+        'description',
+        'status',
+        'date',
+        'user_id'
+    ];
 
     public function customer()
     {

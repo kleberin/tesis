@@ -18,4 +18,13 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     //
+    protected $fillable = [
+        'id',
+        'reference_number',
+        'name',
+        'address',
+        'phone',
+        'latitude',
+        'longitude'
+    ];
 }
