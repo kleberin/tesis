@@ -18,7 +18,12 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/upload-work-order', 'HomeController@upload')->name('upload');
+Route::get('/upload-work-order', 'HomeController@upload')->name('upload-wo');
+Route::get('/update-work-order', 'HomeController@update')->name('update-wo');
+
+Route::post('/upload-receiver', 'HomeController@uploadCsv')->name('upload.csv');
+Route::post('/update-receiver', 'HomeController@updateCsv')->name('update.csv');
+Route::post('/exec-sps', 'HomeController@executeSps')->name('execute.sps');
 
 Route::get('/home/live', 'HomeController@getLiveData')->name('home-live');
 

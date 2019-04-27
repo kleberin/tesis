@@ -1,6 +1,5 @@
 <template>
 	<div>
-		<a class="btn btn-primary btn-sm" href="upload-work-order">Cargar Work Orders</a>
 		<a class="btn btn-primary btn-sm" href="#"
 			v-if="this.state == 'live'" v-on:click="showCreated">Creadas</a>
 		<a class="btn btn-primary btn-sm" href="#"
