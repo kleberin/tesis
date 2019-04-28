@@ -67136,7 +67136,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
                             break;
                         case 'work_order_c':
-                            this.cardTitle = 'Creadas';
+                            this.cardTitle = 'Asignadas';
                             this.currentComponentProps = { 'state': 'created' };
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
                     }
@@ -67173,7 +67173,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         loadCreated: function loadCreated() {
             var _this3 = this;
 
-            this.cardTitle = 'Creadas';
+            this.cardTitle = 'Work Orders Asignadas';
             this.currentComponentProps = { 'state': 'created' };
             axios.default.get('work-order/created').then(function (response) {
                 _this3.markersStack.push(_this3.markers);
@@ -67532,7 +67532,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.backToLive }
           },
-          [_vm._v("En Vivo")]
+          [_vm._v("Asignadas")]
         )
       : _vm._e()
   ])
