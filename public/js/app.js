@@ -67015,7 +67015,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            cardTitle: 'En Vivo',
+            cardTitle: 'Work Orders Status',
             center: { lat: -0.202499, lng: -78.499637 },
             options: {
                 mapTypeControl: false,
