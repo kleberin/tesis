@@ -67520,7 +67520,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.showCreated }
           },
-          [_vm._v("Creadas")]
+          [_vm._v("Asignadas")]
         )
       : _vm._e(),
     _vm._v(" "),
