@@ -66,7 +66,7 @@ class HomeController extends Controller
 
         // leer csv
         // insertar valores
-        $filename1 = storage_path('app\files\WO.csv');
+        $filename1 = storage_path('app\files\\' . $filename);
         $handle = fopen($filename1, "r");
         $header = true;
 
@@ -77,19 +77,19 @@ class HomeController extends Controller
             } else {
                 $customer = $customerRepo->firstOrCreate([
                     'id' => $csvLine[1],
-                    'reference_number' => '1712345678',
-                    'name' => 'Klever Amari',
-                    'address' => $csvLine[4],
-                    'phone' => '3026568',
-                    'latitude'=> $csvLine[5],
-                    'longitude' => $csvLine[6]
+                    'reference_number' => $csvLine[3],
+                    'name' => $csvLine[2],
+                    'address' => $csvLine[7],
+                    'phone' => $csvLine[4],
+                    'latitude'=> $csvLine[8],
+                    'longitude' => $csvLine[9]
                 ]);
                 $work_order = $workOrderRepo->firstOrNew([
                     'id' => $csvLine[0]
                 ]);
                 $work_order->customer_id = $csvLine[1];
-                $work_order->description = $csvLine[2];
-                $work_order->status = $csvLine[3];
+                $work_order->description = $csvLine[5];
+                $work_order->status = $csvLine[6];
                 $work_order->date = Carbon::create(2019,4,8,0,0,0,'America/Guayaquil');
                 $work_order->user_id= null;
                 $work_order->save();
@@ -105,7 +105,7 @@ class HomeController extends Controller
 
     public function updateCsv(Request $request,WorkOrder $workOrderRepo)
     {
-        dd($request);
+        
         $updateedFile = $request->file('file');
         $filename = $updateedFile->getClientOriginalName();
   
@@ -117,37 +117,29 @@ class HomeController extends Controller
 
         // leer csv
         // insertar valores
-        $filename1 = storage_path('app\files\WO_A.csv');
+        $filename1 = storage_path('app\files\\' . $filename);
         $handle = fopen($filename1, "r");
         $header = true;
 
-       /* while ($csvLine = fgetcsv($handle, 1000, ";")) {
-
+        $no_se = [];
+        while ($csvLine = fgetcsv($handle, 1000, ";")) {
             if ($header) {
                 $header = false;
             } else {
-                $customer = $customerRepo->firstOrCreate([
-                    'id' => $csvLine[1],
-                    'reference_number' => '1712345678',
-                    'name' => 'Klever Amari',
-                    'address' => $csvLine[4],
-                    'phone' => '3026568',
-                    'latitude'=> $csvLine[5],
-                    'longitude' => $csvLine[6]
-                ]);
-                $work_order = $workOrderRepo->firstOrNew([
-                    'id' => $csvLine[0]
-                ]);
-                $work_order->customer_id = $csvLine[1];
-                $work_order->description = $csvLine[2];
-                $work_order->status = $csvLine[3];
-                $work_order->date = Carbon::create(2019,4,8,0,0,0,'America/Guayaquil');
-                $work_order->user_id= null;
-                $work_order->save();
+                $work_order = $workOrderRepo->find($csvLine[0]);
+                if (is_null($work_order)) {
+                    $no_se[$csvLine[0]] = 'No existe';
+                }
+                else {
+                    $work_order->status = 'Agendada';
+                    $work_order->date = Carbon::parse($csvLine[1],'America/Guayaquil');
+                    $work_order->save();
+                    $no_se[$csvLine[0]] = 'Ok';
+                }
             }
-        }*/
+        }
         
-        return response()->json(['count' => 30, 'status' => 'ok']);
+        return response()->json(['count' => count($no_se), 'detail' => $no_se, 'status' => 'ok']);
     }
 
     public function executeSps() {

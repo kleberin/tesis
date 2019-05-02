@@ -4,7 +4,7 @@
         <div class="col-6">
             <h2 class="h2-pre">{{description}}</h2>
         </div>
-        <div class="panel-body">
+        <div class="col-6 panel-body">
             <span> Suba el archivo de WO Agendadas</span>
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="customFile" name="file" ref="file" v-on:change="handleFileUpload()">
@@ -46,24 +46,12 @@
                 }
             }
             ).then(response => {
+              console.log(response);
                 if (response.data.status === 'ok') {
                     this.description = 'Leidos ' + response.data.count + ' registros';
-                   /* this.description += '\n Calculando distancias...'*/
-                    axios.default.post('exec-sps',{})
-                        .then(response => {
-                            if (response.data.status === 'ok') {
-                                this.description = 'Ordenes procesadas correctamente';
-                                this.loading = false;
-                            }
-                            else {
-                                this.loading = false;
-                                this.description = 'Ocurrio un error intente nuavamente';
-                            }
-                        })
-                        .catch(error => {
-                             this.loading = false;
-                             this.description = 'Ocurrio un error intente nuavamente';
-                        })
+                    console.log('aaaaaa');
+                    for (const wo_id in Object.keys(response.data.detail))
+                      console.log(wo_id, response.data.detail[wo_id]);
                 }
                 else {
                     this.loading = false;
