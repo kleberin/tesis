@@ -67015,7 +67015,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
-            cardTitle: 'Work Orders Status',
+            cardTitle: 'En Vivo',
             center: { lat: -0.202499, lng: -78.499637 },
             options: {
                 mapTypeControl: false,
@@ -67131,7 +67131,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_0__TechnicianComponent_vue___default.a;
                             break;
                         case 'work_order':
-                            this.cardTitle = 'En Vivo';
+                            this.cardTitle = 'Work Order Status';
                             this.currentComponentProps = { 'state': 'live' };
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
                             break;
@@ -67173,7 +67173,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         loadCreated: function loadCreated() {
             var _this3 = this;
 
-            this.cardTitle = 'Work Orders Asignadas';
+            this.cardTitle = 'Asignadas';
             this.currentComponentProps = { 'state': 'created' };
             axios.default.get('work-order/created').then(function (response) {
                 _this3.markersStack.push(_this3.markers);
@@ -67520,7 +67520,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.showCreated }
           },
-          [_vm._v("Asignadas")]
+          [_vm._v("Creadas")]
         )
       : _vm._e(),
     _vm._v(" "),
@@ -67532,7 +67532,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.backToLive }
           },
-          [_vm._v("Asignadas")]
+          [_vm._v("En Vivo")]
         )
       : _vm._e()
   ])
@@ -67760,6 +67760,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -67776,8 +67777,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.file = this.$refs.file.files[0];
             this.fileName = this.$refs.file.files[0].name;
         },
-        submitFile: function submitFile() {
+        metodo_2: function metodo_2() {
             var _this = this;
+
+            this.description += '\n Calculando distancias...';
+            axios.default.post('exec-sps', {}).then(function (response) {
+                if (response.data.status === 'ok') {
+                    _this.description = 'Ordenes procesadas correctamente';
+                    _this.loading = false;
+                } else {
+                    _this.loading = false;
+                    _this.description = 'Ocurrio un error intente nuavamente';
+                }
+            }).catch(function (error) {
+                _this.loading = false;
+                _this.description = 'Ocurrio un error intente nuavamente';
+            });
+        },
+        submitFile: function submitFile() {
+            var _this2 = this;
 
             var formData = new FormData();
             formData.append('file', this.file);
@@ -67788,27 +67806,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }
             }).then(function (response) {
                 if (response.data.status === 'ok') {
-                    _this.description = 'Leidos ' + response.data.count + ' registros';
-                    _this.description += '\n Calculando distancias...';
-                    axios.default.post('exec-sps', {}).then(function (response) {
-                        if (response.data.status === 'ok') {
-                            _this.description = 'Ordenes procesadas correctamente';
-                            _this.loading = false;
-                        } else {
-                            _this.loading = false;
-                            _this.description = 'Ocurrio un error intente nuavamente';
-                        }
-                    }).catch(function (error) {
-                        _this.loading = false;
-                        _this.description = 'Ocurrio un error intente nuavamente';
-                    });
+                    _this2.description = 'Leidos ' + response.data.count + ' registros';
                 } else {
-                    _this.loading = false;
-                    _this.description = 'Ocurrio un error intente nuavamente';
+                    _this2.loading = false;
+                    _this2.description = 'Ocurrio un error intente nuavamente';
                 }
             }).catch(function (error) {
-                _this.loading = false;
-                _this.description = 'Ocurrio un error intente nuavamente';
+                _this2.loading = false;
+                _this2.description = 'Ocurrio un error intente nuavamente';
             });
         }
     }
@@ -67828,7 +67833,7 @@ var render = function() {
         _c("h2", { staticClass: "h2-pre" }, [_vm._v(_vm._s(_vm.description))])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "panel-body" }, [
+      _c("div", { staticClass: "col-6 panel-body" }, [
         _c("span", [_vm._v(" Suba el archivo de WO ")]),
         _vm._v(" "),
         _c("div", { staticClass: "custom-file" }, [
@@ -67861,6 +67866,19 @@ var render = function() {
             }
           },
           [_vm._v("Submit")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-default",
+            on: {
+              click: function($event) {
+                _vm.metodo_2()
+              }
+            }
+          },
+          [_vm._v("Asignar")]
         ),
         _vm._v(" "),
         _vm.loading
@@ -68012,56 +68030,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            file: '',
-            fileName: 'Seleccione archivo...',
-            loading: false,
-            description: 'Suba el archivo para continuar...'
-        };
+  data: function data() {
+    return {
+      file: '',
+      fileName: 'Seleccione archivo...',
+      loading: false,
+      description: 'Suba el archivo para continuar...'
+    };
+  },
+
+  methods: {
+    handleFileUpload: function handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+      this.fileName = this.$refs.file.files[0].name;
     },
+    submitFile: function submitFile() {
+      var _this = this;
 
-    methods: {
-        handleFileUpload: function handleFileUpload() {
-            this.file = this.$refs.file.files[0];
-            this.fileName = this.$refs.file.files[0].name;
-        },
-        submitFile: function submitFile() {
-            var _this = this;
-
-            var formData = new FormData();
-            formData.append('file', this.file);
-            this.loading = true;
-            axios.default.post('update-receiver', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            }).then(function (response) {
-                if (response.data.status === 'ok') {
-                    _this.description = 'Leidos ' + response.data.count + ' registros';
-                    /* this.description += '\n Calculando distancias...'*/
-                    axios.default.post('exec-sps', {}).then(function (response) {
-                        if (response.data.status === 'ok') {
-                            _this.description = 'Ordenes procesadas correctamente';
-                            _this.loading = false;
-                        } else {
-                            _this.loading = false;
-                            _this.description = 'Ocurrio un error intente nuavamente';
-                        }
-                    }).catch(function (error) {
-                        _this.loading = false;
-                        _this.description = 'Ocurrio un error intente nuavamente';
-                    });
-                } else {
-                    _this.loading = false;
-                    _this.description = 'Ocurrio un error intente nuavamente';
-                }
-            }).catch(function (error) {
-                _this.loading = false;
-                _this.description = 'Ocurrio un error intente nuavamente';
-            });
+      var formData = new FormData();
+      formData.append('file', this.file);
+      this.loading = true;
+      axios.default.post('update-receiver', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
+      }).then(function (response) {
+        console.log(response);
+        if (response.data.status === 'ok') {
+          _this.description = 'Leidos ' + response.data.count + ' registros';
+          console.log('aaaaaa');
+          for (var wo_id in Object.keys(response.data.detail)) {
+            console.log(wo_id, response.data.detail[wo_id]);
+          }
+        } else {
+          _this.loading = false;
+          _this.description = 'Ocurrio un error intente nuavamente';
+        }
+      }).catch(function (error) {
+        _this.loading = false;
+        _this.description = 'Ocurrio un error intente nuavamente';
+      });
     }
+  }
 });
 
 /***/ }),
@@ -68078,7 +68088,7 @@ var render = function() {
         _c("h2", { staticClass: "h2-pre" }, [_vm._v(_vm._s(_vm.description))])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "panel-body" }, [
+      _c("div", { staticClass: "col-6 panel-body" }, [
         _c("span", [_vm._v(" Suba el archivo de WO Agendadas")]),
         _vm._v(" "),
         _c("div", { staticClass: "custom-file" }, [
