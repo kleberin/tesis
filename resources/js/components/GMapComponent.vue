@@ -174,7 +174,7 @@
                             this.currentComponent = optionsComponent;
                             break;
                         case 'work_order_c':
-                            this.cardTitle = 'Creadas';
+                            this.cardTitle = 'Asignadas';
                             this.currentComponentProps = { 'state': 'created' };
                             this.currentComponent = optionsComponent;
                     }
