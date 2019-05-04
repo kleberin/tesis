@@ -36,3 +36,5 @@ Route::get('/technician/{id}', 'TechnicianController@index')->name('technician.i
 Route::get('/work-order/live', 'WorkOrderController@getLiveData')->name('workOrder.live');
 
 Route::get('/work-order/created', 'WorkOrderController@getCreatedData')->name('workOrder.created');
+
+Route::get('/work-order/asigd', 'WorkOrderController@getAsigdData')->name('workOrder.asigd');

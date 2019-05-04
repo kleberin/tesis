@@ -168,15 +168,21 @@
                             this.currentComponentProps = { 'id': marker.id };
                             this.currentComponent = technicianComponent;
                             break;
-                        case 'work_order':
+                       /* case 'work_order':
                             this.cardTitle = 'En Vivo';
                             this.currentComponentProps = { 'state': 'live' };
                             this.currentComponent = optionsComponent;
-                            break;
+                            break;*/
                         case 'work_order_c':
-                            this.cardTitle = 'Asignadas';
+                            this.cardTitle = 'Work Order Creadas';
                             this.currentComponentProps = { 'state': 'created' };
                             this.currentComponent = optionsComponent;
+                            break;
+                        case 'work_order_as':
+                            this.cardTitle = 'Work Order Asignadas';
+                            this.currentComponentProps = { 'state': 'asigd' };
+                            this.currentComponent = optionsComponent;
+                            break;                            
                     }
                 }
             },
@@ -209,7 +215,7 @@
                 this.path = [];
             },
             loadCreated() {
-                this.cardTitle = 'Creadas';
+                this.cardTitle = 'Work Order Asignadas';
                 this.currentComponentProps = { 'state': 'created' }
                 axios.default.get('work-order/created')
                     .then(response => {
@@ -219,7 +225,7 @@
                         this.markers.push({
                             position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                             icon: {
-                                url: 'img/home_yellow.png'
+                                url: 'img/home_red.png'
                             },
                             type: 'work_order_c',
                             id: response.data[i].id,

@@ -50,6 +50,16 @@ class WorkOrderController extends Controller
         $data = $this->workOrderRepo
             ->join('customers', 'customers.id', 'work_orders.customer_id')
             ->select('work_orders.id', 'work_orders.status', 'work_orders.date', 'customers.latitude', 'customers.longitude')
+            ->where('status', 'Creada')
+            ->get();
+        return response()->json($data);
+    }
+
+    public function getAsigdData()
+    {
+        $data = $this->workOrderRepo
+            ->join('customers', 'customers.id', 'work_orders.customer_id')
+            ->select('work_orders.id', 'work_orders.status', 'work_orders.date', 'customers.latitude', 'customers.longitude')
             ->where('status', 'Asignada')
             ->get();
         return response()->json($data);

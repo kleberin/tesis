@@ -67130,15 +67130,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             this.currentComponentProps = { 'id': marker.id };
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_0__TechnicianComponent_vue___default.a;
                             break;
-                        case 'work_order':
-                            this.cardTitle = 'Work Order Status';
-                            this.currentComponentProps = { 'state': 'live' };
-                            this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
-                            break;
+                        /* case 'work_order':
+                             this.cardTitle = 'En Vivo';
+                             this.currentComponentProps = { 'state': 'live' };
+                             this.currentComponent = optionsComponent;
+                             break;*/
                         case 'work_order_c':
-                            this.cardTitle = 'Asignadas';
+                            this.cardTitle = 'Work Order Creadas';
                             this.currentComponentProps = { 'state': 'created' };
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
+                            break;
+                        case 'work_order_as':
+                            this.cardTitle = 'Work Order Asignadas';
+                            this.currentComponentProps = { 'state': 'asigd' };
+                            this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
+                            break;
                     }
                 }
         },
@@ -67173,7 +67179,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         loadCreated: function loadCreated() {
             var _this3 = this;
 
-            this.cardTitle = 'Asignadas';
+            this.cardTitle = 'Work Order Asignadas';
             this.currentComponentProps = { 'state': 'created' };
             axios.default.get('work-order/created').then(function (response) {
                 _this3.markersStack.push(_this3.markers);
@@ -67182,7 +67188,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this3.markers.push({
                         position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                         icon: {
-                            url: 'img/home_yellow.png'
+                            url: 'img/home_red.png'
                         },
                         type: 'work_order_c',
                         id: response.data[i].id,
@@ -67520,7 +67526,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.showCreated }
           },
-          [_vm._v("Creadas")]
+          [_vm._v("Asignadas")]
         )
       : _vm._e(),
     _vm._v(" "),
@@ -67532,7 +67538,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.backToLive }
           },
-          [_vm._v("En Vivo")]
+          [_vm._v("Work Order Status")]
         )
       : _vm._e()
   ])
