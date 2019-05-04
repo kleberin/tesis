@@ -67179,7 +67179,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         loadCreated: function loadCreated() {
             var _this3 = this;
 
-            this.cardTitle = 'Work Order Asignadas';
+            this.cardTitle = 'Work Order Creadas';
             this.currentComponentProps = { 'state': 'created' };
             axios.default.get('work-order/created').then(function (response) {
                 _this3.markersStack.push(_this3.markers);
@@ -67188,7 +67188,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this3.markers.push({
                         position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                         icon: {
-                            url: 'img/home_red.png'
+                            url: 'img/home_yellow.png'
                         },
                         type: 'work_order_c',
                         id: response.data[i].id,
@@ -67199,7 +67199,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }).catch(function (error) {
                 console.log(error);
             });
-        }
+        },
+        loadAsigd: function loadAsigd() {
+          var _this3 = this;
+
+          this.cardTitle = 'Work Order Asignadas';
+          this.currentComponentProps = { 'state': 'asigd' };
+          axios.default.get('work-order/asigd').then(function (response) {
+              _this3.markersStack.push(_this3.markers);
+              _this3.markers = [];
+              for (var i = 0; i < response.data.length; i++) {
+                  _this3.markers.push({
+                      position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                      icon: {
+                          url: 'img/home_red.png'
+                      },
+                      type: 'work_order_as',
+                      id: response.data[i].id,
+                      name: response.data[i].status,
+                      date: moment.utc(response.data[i].date)
+                  });
+              }
+          }).catch(function (error) {
+              console.log(error);
+          });
+      }        
+
     }
 });
 
