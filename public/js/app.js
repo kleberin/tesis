@@ -67201,30 +67201,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         loadAsigd: function loadAsigd() {
-          var _this3 = this;
+            var _this4 = this;
 
-          this.cardTitle = 'Work Order Asignadas';
-          this.currentComponentProps = { 'state': 'asigd' };
-          axios.default.get('work-order/asigd').then(function (response) {
-              _this3.markersStack.push(_this3.markers);
-              _this3.markers = [];
-              for (var i = 0; i < response.data.length; i++) {
-                  _this3.markers.push({
-                      position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
-                      icon: {
-                          url: 'img/home_red.png'
-                      },
-                      type: 'work_order_as',
-                      id: response.data[i].id,
-                      name: response.data[i].status,
-                      date: moment.utc(response.data[i].date)
-                  });
-              }
-          }).catch(function (error) {
-              console.log(error);
-          });
-      }        
-
+            this.cardTitle = 'Work Order Asignadas';
+            this.currentComponentProps = { 'state': 'asigd' };
+            axios.default.get('work-order/asigd').then(function (response) {
+                _this4.markersStack.push(_this4.markers);
+                _this4.markers = [];
+                for (var i = 0; i < response.data.length; i++) {
+                    _this4.markers.push({
+                        position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                        icon: {
+                            url: 'img/home_red.png'
+                        },
+                        type: 'work_order_as',
+                        id: response.data[i].id,
+                        name: response.data[i].status,
+                        date: moment.utc(response.data[i].date)
+                    });
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
     }
 });
 
@@ -67563,7 +67562,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.backToLive }
           },
-          [_vm._v("Work Order Status")]
+          [_vm._v("En vivo")]
         )
       : _vm._e()
   ])

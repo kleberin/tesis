@@ -3,7 +3,7 @@
 		<a class="btn btn-primary btn-sm" href="#"
 			v-if="this.state == 'live'" v-on:click="showCreated">Asignadas</a>
 		<a class="btn btn-primary btn-sm" href="#"
-			v-if="this.state == 'created'" v-on:click="backToLive">Work Order Status</a>
+			v-if="this.state == 'created'" v-on:click="backToLive">En Vivo</a>
 	</div>
 </template>
 

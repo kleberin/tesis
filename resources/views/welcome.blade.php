@@ -77,7 +77,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    {{ config('app.name', 'Laravel') }} Amari
+                    {{ config('app.name', 'Laravel') }} Klever Amari
                 </div>
 
                 <h1>Optimización asignación de Work Orders<br />en empresas de televisión satelital</h1>
