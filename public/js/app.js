@@ -67008,6 +67008,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -67082,10 +67083,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             for (var i = 0; i < response.data.length; i++) {
                 var icon_url = void 0;
                 // TODO seleccionar color
-                // if (response.data[i].dealer_id) {
-                //     icon_url = 
-                // }
-                icon_url = 'img/home_yellow.png';
+                /*if (i == 0) {
+                    icon_url = 'img/home_yellow.png'
+                }
+                if (i == 1) {
+                    icon_url = 'img/home_blue.png'
+                }
+                if (i == 2) {
+                    icon_url = 'img/home_green.png'
+                }
+                if (i == 3) {
+                    icon_url = 'img/home_gris.png'
+                }
+                if (i == 4) {
+                    icon_url = 'img/home_naranja.png'
+                }
+                if (i == 5) {
+                    icon_url = 'img/home_red.png'
+                }
+                if (i == 6) {
+                    icon_url = 'img/home_yellow.png'
+                }
+                if (i == 7) {
+                    icon_url = 'img/home_gris.png'
+                }*/
+                icon_url = 'img/home_gris.png';
+
                 _this.markers.push({
                     position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                     icon: {
@@ -67130,11 +67153,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                             this.currentComponentProps = { 'id': marker.id };
                             this.currentComponent = __WEBPACK_IMPORTED_MODULE_0__TechnicianComponent_vue___default.a;
                             break;
-                        /* case 'work_order':
-                             this.cardTitle = 'En Vivo';
-                             this.currentComponentProps = { 'state': 'live' };
-                             this.currentComponent = optionsComponent;
-                             break;*/
+                        case 'work_order':
+                            this.cardTitle = 'En Vivo';
+                            this.currentComponentProps = { 'state': 'live' };
+                            this.currentComponent = __WEBPACK_IMPORTED_MODULE_1__Options_vue___default.a;
+                            break;
                         case 'work_order_c':
                             this.cardTitle = 'Work Order Creadas';
                             this.currentComponentProps = { 'state': 'created' };
@@ -67527,6 +67550,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 		showCreated: function showCreated() {
 			this.$emit('show-created');
 		},
+		showAsigd: function showAsigd() {
+			this.$emit('show-asigd');
+		},
 		backToLive: function backToLive() {
 			this.$emit('pop-history', 'En Vivo');
 		}
@@ -67548,13 +67574,13 @@ var render = function() {
           {
             staticClass: "btn btn-primary btn-sm",
             attrs: { href: "#" },
-            on: { click: _vm.showCreated }
+            on: { click: _vm.showAsigd }
           },
           [_vm._v("Asignadas")]
         )
       : _vm._e(),
     _vm._v(" "),
-    this.state == "created"
+    this.state == "asigd"
       ? _c(
           "a",
           {
@@ -67562,7 +67588,7 @@ var render = function() {
             attrs: { href: "#" },
             on: { click: _vm.backToLive }
           },
-          [_vm._v("En vivo")]
+          [_vm._v("En Vivo")]
         )
       : _vm._e()
   ])
@@ -67644,7 +67670,8 @@ var render = function() {
                         on: {
                           "show-history": _vm.loadHistory,
                           "pop-history": _vm.popHistory,
-                          "show-created": _vm.loadCreated
+                          "show-created": _vm.loadCreated,
+                          "show-asigd": _vm.loadAsigd
                         }
                       },
                       "component",

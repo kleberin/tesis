@@ -32,7 +32,8 @@
                             v-bind="currentComponentProps"
                             v-on:show-history="loadHistory"
                             v-on:pop-history="popHistory"
-                            v-on:show-created="loadCreated">
+                            v-on:show-created="loadCreated"
+                            v-on:show-asigd="loadAsigd">
                     </component>
                 </div>
             </div>
@@ -116,10 +117,32 @@
                     for (var i = 0; i < response.data.length; i++) {
                         let icon_url
                         // TODO seleccionar color
-                        // if (response.data[i].dealer_id) {
-                        //     icon_url = 
-                        // }
-                        icon_url = 'img/home_yellow.png'
+                         /*if (i == 0) {
+                             icon_url = 'img/home_yellow.png'
+                         }
+                         if (i == 1) {
+                             icon_url = 'img/home_blue.png'
+                         }
+                         if (i == 2) {
+                             icon_url = 'img/home_green.png'
+                         }
+                         if (i == 3) {
+                             icon_url = 'img/home_gris.png'
+                         }
+                         if (i == 4) {
+                             icon_url = 'img/home_naranja.png'
+                         }
+                         if (i == 5) {
+                             icon_url = 'img/home_red.png'
+                         }
+                         if (i == 6) {
+                             icon_url = 'img/home_yellow.png'
+                         }
+                         if (i == 7) {
+                             icon_url = 'img/home_gris.png'
+                         }*/
+                         icon_url = 'img/home_gris.png'                      
+
                         this.markers.push({
                             position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
                             icon: {
@@ -168,11 +191,11 @@
                             this.currentComponentProps = { 'id': marker.id };
                             this.currentComponent = technicianComponent;
                             break;
-                       /* case 'work_order':
+                        case 'work_order':
                             this.cardTitle = 'En Vivo';
                             this.currentComponentProps = { 'state': 'live' };
                             this.currentComponent = optionsComponent;
-                            break;*/
+                            break;
                         case 'work_order_c':
                             this.cardTitle = 'Work Order Creadas';
                             this.currentComponentProps = { 'state': 'created' };
