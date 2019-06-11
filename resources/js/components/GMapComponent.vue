@@ -1,49 +1,71 @@
 <template>
-    <div id="wrapper">
-        <gmap-map
-                :center="center"
-                :zoom="12"
-                :options="options">
-            <gmap-marker
-                    :key="index"
-                    v-for="(m, index) in markers"
-                    :position="m.position"
-                    :icon="m.icon"
-                    @click="toggleInfoWindow(m, index)">
-            </gmap-marker>
-            <gmap-polyline
-                    v-if="path.length > 0"
-                    :path="path">
-            </gmap-polyline>
-            <gmap-info-window
-                    :options="infoOptions"
-                    :position="infoWindowPos"
-                    :opened="infoWinOpen"
-                    @closeclick="infoWinOpen=false">
-            </gmap-info-window>
-        </gmap-map>
-        <div class="col-md-4 floating">
-            <div class="card card-default">
-                <div class="card-header">{{cardTitle}}</div>
-
-                <div class="card-body" v-if="currentComponent != null">
-                    <component
-                            v-bind:is="currentComponent"
-                            v-bind="currentComponentProps"
-                            v-on:show-history="loadHistory"
-                            v-on:pop-history="popHistory"
-                            v-on:show-created="loadCreated"
-                            v-on:show-asigd="loadAsigd">
-                    </component>
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Dealers</span>
+                    </h6>
+                    <dealer-filter class="nav" @dealer_filter_changed="updateDealerFilter"></dealer-filter>
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Work Order Status</span>
+                    </h6>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="woStatRadios" id="radio.wostat.1" value="asigned" v-model="workOrderStatus">
+                        <label class="form-check-label" for="radio.wostat.1">Asignada</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="woStatRadios" id="radio.wostat.2" value="scheduled" v-model="workOrderStatus">
+                        <label class="form-check-label" for="radio.wostat.2">Agendada</label>
+                    </div>
                 </div>
-            </div>
+            </nav>
+            <main role="main" id="wrapper" class="col-md-9 ml-sm-auto col-lg-10 py-4 h-100">
+                <gmap-map
+                        :center="center"
+                        :zoom="12"
+                        :options="options">
+                    <gmap-marker
+                            :key="index"
+                            v-for="(m, index) in markers"
+                            :position="m.position"
+                            :icon="m.icon"
+                            @click="toggleInfoWindow(m, index)">
+                    </gmap-marker>
+                    <gmap-polyline
+                            v-if="path.length > 0"
+                            :path="path">
+                    </gmap-polyline>
+                    <gmap-info-window
+                            :options="infoOptions"
+                            :position="infoWindowPos"
+                            :opened="infoWinOpen"
+                            @closeclick="closeWindow">
+                    </gmap-info-window>
+                </gmap-map>
+                <div class="col-md-4 floating">
+                    <div class="card card-default">
+                        <div class="card-header">{{cardTitle}}</div>
+
+                        <div class="card-body" v-if="currentComponent != null">
+                            <component
+                                    v-bind:is="currentComponent"
+                                    v-bind="currentComponentProps"
+                                    v-on:show-history="loadHistory"
+                                    v-on:pop-history="popHistory"
+                                    v-on:show-created="loadCreated"
+                                    v-on:show-asigd="loadAsigd">
+                            </component>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 </template>
 
 <script>
     import technicianComponent from './TechnicianComponent.vue';
-    import optionsComponent from './Options.vue';
 
     export default {
         data() {
@@ -67,99 +89,73 @@
                 infoWindowPos: null,
                 infoWinOpen: false,
                 currentMarkerIdx: null,
-                currentComponentProps: { 'state': 'live' },
-                currentComponent: optionsComponent,
-                markersStack: []
+                currentComponentProps: null,
+                currentComponent: null,
+                markersStack: [],
+                dealerFilter: '',
+                workOrderStatus: 'scheduled'
             }
         },
         components: {
-          technicianComponent,
-          optionsComponent
+          technicianComponent
         },
         mounted() {
-            axios.default.get('home/live')
-                .then(response => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        this.markers.push({
-                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
-                            icon: {
-                                url: 'img/building_blue.png',
-                            },
-                            type: 'dealer',
-                            name: response.data[i].name,
-                            address: response.data[i].address
-                        })
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                });
-            axios.default.get('tracking/live')
-                .then(response => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        this.markers.push({
-                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
-                            icon: {
-                                url: 'img/tecnician.png'
-                            },
-                            type: 'technician',
-                            id: response.data[i].user_id,
-                            name: response.data[i].name,
-                            last_location: moment.utc(response.data[i].reported_at)
-                        })
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                });
-            axios.default.get('work-order/live')
-                .then(response => {
-                    for (var i = 0; i < response.data.length; i++) {
-                        let icon_url
-                        // TODO seleccionar color
-                         /*if (i == 0) {
-                             icon_url = 'img/home_yellow.png'
-                         }
-                         if (i == 1) {
-                             icon_url = 'img/home_blue.png'
-                         }
-                         if (i == 2) {
-                             icon_url = 'img/home_green.png'
-                         }
-                         if (i == 3) {
-                             icon_url = 'img/home_gris.png'
-                         }
-                         if (i == 4) {
-                             icon_url = 'img/home_naranja.png'
-                         }
-                         if (i == 5) {
-                             icon_url = 'img/home_red.png'
-                         }
-                         if (i == 6) {
-                             icon_url = 'img/home_yellow.png'
-                         }
-                         if (i == 7) {
-                             icon_url = 'img/home_gris.png'
-                         }*/
-                         icon_url = 'img/home_gris.png'                      
-
-                        this.markers.push({
-                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
-                            icon: {
-                                url: icon_url
-                            },
-                            type: 'work_order',
-                            id: response.data[i].id,
-                            name: response.data[i].status,
-                            date: moment.utc(response.data[i].date)
-                        })
-                    }
-                })
-                .catch(error => {
-                    console.log(error)
-                })
+          //  
         },
         methods: {
+            updateDealerFilter: function(dealerIds) {
+                let dealerFilter = '';
+                if (dealerIds !== undefined) {
+                    dealerFilter = '?';
+                    if (dealerIds.length === 0)
+                        dealerFilter += 'dealerIds[0]=-1';
+                    for (let i = 0; i < dealerIds.length; i++) {
+                        let qps = i === 0 ? '' : '&'; 
+                        dealerFilter += `${qps}dealerIds[${i}]=${dealerIds[i]}`;
+                    }
+                }
+                this.dealerFilter = dealerFilter;
+                this.loadMapData();
+            },
+            loadMapData: function(dealerIds) {
+                this.markers = [];
+                axios.default.get(`home/live${this.dealerFilter}`)
+                    .then(response => {
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.markers.push({
+                                position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                                icon: {
+                                    url: 'img/building_blue.png',
+                                },
+                                type: 'dealer',
+                                name: response.data[i].name,
+                                address: response.data[i].address
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                axios.default.get(`tracking/live${this.dealerFilter}`)
+                    .then(response => {
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.markers.push({
+                                position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                                icon: {
+                                    url: 'img/tecnician.png'
+                                },
+                                type: 'technician',
+                                id: response.data[i].user_id,
+                                name: response.data[i].name,
+                                last_location: moment.utc(response.data[i].reported_at)
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    });
+                this.loadWorkOrders();
+            },
             toggleInfoWindow: function(marker, index) {
                 this.infoWindowPos = marker.position;
                 this.infoOptions.content = '';
@@ -181,31 +177,11 @@
                     this.infoWinOpen = true;
                     this.currentMarkerIdx = index;
                     switch (marker.type) {
-                        case 'dealer':
-                            this.cardTitle = 'En Vivo';
-                            this.currentComponentProps = { 'state': 'live' };
-                            this.currentComponent = optionsComponent;
-                            break;
                         case 'technician':
                             this.cardTitle = 'Técnico';
                             this.currentComponentProps = { 'id': marker.id };
                             this.currentComponent = technicianComponent;
                             break;
-                        case 'work_order':
-                            this.cardTitle = 'En Vivo';
-                            this.currentComponentProps = { 'state': 'live' };
-                            this.currentComponent = optionsComponent;
-                            break;
-                        case 'work_order_c':
-                            this.cardTitle = 'Work Order Creadas';
-                            this.currentComponentProps = { 'state': 'created' };
-                            this.currentComponent = optionsComponent;
-                            break;
-                        case 'work_order_as':
-                            this.cardTitle = 'Work Order Asignadas';
-                            this.currentComponentProps = { 'state': 'asigd' };
-                            this.currentComponent = optionsComponent;
-                            break;                            
                     }
                 }
             },
@@ -237,25 +213,40 @@
                 this.markers = this.markersStack.pop();
                 this.path = [];
             },
+            closeWindow: function(a, b, c) {
+                console.log(a);
+                console.log(b);
+                console.log(c);
+                this.infoWinOpen=false;
+                this.currentComponent = null;
+                this.currentComponentProps = null;
+            },
+            loadWorkOrders: function() {
+                switch (this.workOrderStatus) {
+                    case 'asigned':
+                        this.loadAsigd();
+                        break;
+                    case 'scheduled':
+                        this.loadScheduled();
+                        break;
+                }
+            },
             loadCreated() {
                 this.cardTitle = 'Work Order Creadas';
-                this.currentComponentProps = { 'state': 'created' }
                 axios.default.get('work-order/created')
                     .then(response => {
-                        this.markersStack.push(this.markers);
-                        this.markers = [];
                         for (var i = 0; i < response.data.length; i++) {
-                        this.markers.push({
-                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
-                            icon: {
-                                url: 'img/home_yellow.png'
-                            },
-                            type: 'work_order_c',
-                            id: response.data[i].id,
-                            name: response.data[i].status,
-                            date: moment.utc(response.data[i].date)
-                        })
-                    }
+                            this.markers.push({
+                                position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                                icon: {
+                                    url: 'img/home_yellow.png'
+                                },
+                                type: 'work_order_c',
+                                id: response.data[i].id,
+                                name: response.data[i].status,
+                                date: moment.utc(response.data[i].date)
+                            })
+                        }
                     })
                     .catch(error => {
                         console.log(error);
@@ -263,34 +254,57 @@
             },
             loadAsigd() {
                 this.cardTitle = 'Work Order Asignadas';
-                this.currentComponentProps = { 'state': 'asigd' }
                 axios.default.get('work-order/asigd')
                     .then(response => {
-                        this.markersStack.push(this.markers);
-                        this.markers = [];
                         for (var i = 0; i < response.data.length; i++) {
-                        this.markers.push({
-                            position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
-                            icon: {
-                                url: 'img/home_red.png'
-                            },
-                            type: 'work_order_as',
-                            id: response.data[i].id,
-                            name: response.data[i].status,
-                            date: moment.utc(response.data[i].date)
-                        })
-                    }
+                            this.markers.push({
+                                position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                                icon: {
+                                    url: 'img/home_red.png'
+                                },
+                                type: 'work_order_as',
+                                id: response.data[i].id,
+                                name: response.data[i].status,
+                                date: moment.utc(response.data[i].date)
+                            })
+                        }
                     })
                     .catch(error => {
                         console.log(error);
                     })
+            },
+            loadScheduled() {
+                this.cardTitle = 'En Vivo';
+                axios.default.get(`work-order/live${this.dealerFilter}`)
+                    .then(response => {
+                        console.log(response.data.length);
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.markers.push({
+                                position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
+                                icon: {
+                                    url: 'img/home_gris.png'
+                                },
+                                type: 'work_order',
+                                id: response.data[i].id,
+                                name: response.data[i].status,
+                                date: moment.utc(response.data[i].date)
+                            })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                    })
+            }
+        },
+        watch: {
+            workOrderStatus: function() {
+                this.loadMapData();
             }
         }
     }
 </script>
 
 <style>
-    #wrapper,
     .vue-map-container,
     .vue-map {
         height: 100%;
@@ -301,7 +315,7 @@
     .floating {
         position: absolute;
         top: 10px;
-        left: 15px;
+        left: 30px;
         padding: 0 !important;
     }
 </style>

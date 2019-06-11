@@ -54,24 +54,38 @@ class TrackingController extends Controller
     }
 
     /**
+     * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getLiveData()
+    public function getLiveData(Request $request)
     {
+        /** @var array $dealerIds */
+        $dealerIds = $request->query('dealerIds');
+
         $today = Carbon::today('America/Guayaquil');
         $today->addHours(5);
         $lastTracking = DB::table('trackings')
             ->select('user_id', DB::raw('MAX(id) as id'))
             ->groupBy('user_id');
-        $data = $this->trackingRepo
+        $qb = $this->trackingRepo
             ->select('trackings.user_id', 'users.name', 'trackings.latitude', 'trackings.longitude', 'trackings.reported_at')
             ->join('users', 'trackings.user_id', '=', 'users.id')
             ->joinSub($lastTracking, 't1', function ($join) {
                 $join->on('trackings.id', '=', 't1.id');
             })
-            ->where('reported_at', '>=', $today)
-            ->get();
+            ->where('reported_at', '>=', $today);
+        
+        if ($dealerIds == null) {
+            $user = Auth::user();
+            if ($user->role_id != 3)
+                $qb->where('users.dealer_id', $user->dealer_id);
+        }
+        else {
+            $qb->whereIn('users.dealer_id', $dealerIds);
+        }
+
+        $data = $qb->get();
         return response()->json($data);
     }
 

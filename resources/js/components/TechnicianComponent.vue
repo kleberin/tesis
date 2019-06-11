@@ -54,7 +54,7 @@
         this.historyShown = true;
       },
       backToLive() {
-        this.$emit('pop-history');
+        this.$emit('pop-history', 'En Vivo');
         this.historyShown = false;
       }
     }

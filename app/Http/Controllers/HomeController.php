@@ -8,6 +8,7 @@ use App\WorkOrder;
 use App\Util\HungarianBipatiteMatching;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -102,7 +103,6 @@ class HomeController extends Controller
     /**
      * 
      */
-
     public function updateCsv(Request $request,WorkOrder $workOrderRepo)
     {
         
@@ -142,6 +142,9 @@ class HomeController extends Controller
         return response()->json(['count' => count($no_se), 'detail' => $no_se, 'status' => 'ok']);
     }
 
+    /**
+     * 
+     */
     public function executeSps() {
         $usuario = getenv('DB_USERNAME');
         $password =getenv('DB_PASSWORD');
@@ -233,13 +236,26 @@ class HomeController extends Controller
     }
 
     /**
+     * @param Request $request
      * @param Dealer $dealerRepository
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getLiveData(Dealer $dealerRepository)
+    public function getLiveData(Request $request, Dealer $dealerRepository)
     {
-        $data = $dealerRepository->select('id', 'name', 'address', 'latitude', 'longitude')->get();
+        /** @var array $dealerIds */
+        $dealerIds = $request->query('dealerIds');
+        $qb = $dealerRepository->select('id', 'name', 'address', 'latitude', 'longitude');
+        if ($dealerIds == null) {
+            $user = Auth::user();
+            if ($user->role_id != 3)
+                $qb->where('id', $user->dealer_id);
+        }
+        else {
+            $qb->whereIn('id', $dealerIds);
+        }
+
+        $data = $qb->get();
         return response()->json($data);
     }
 
