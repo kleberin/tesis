@@ -38,7 +38,7 @@ class TrackingController extends Controller
             /** @var Tracking $tracking */
             $this->trackingRepo->create([
                 'user_id' => $userId,
-                'reported_at' => Carbon::parse($location['timestamp'])->setTimezone('UTC'),
+                'reported_at' => Carbon::parse($location['timestamp'],'America/Guayaquil')->setTimezone('UTC'),
                 'latitude' => $location['latitude'],
                 'longitude' => $location['longitude'],
                 'accuracy' => $location['accuracy']
