@@ -93,6 +93,7 @@ class HomeController extends Controller
                 $work_order->status = $csvLine[6];
                 $work_order->date = Carbon::create(2019,4,8,0,0,0,'America/Guayaquil');
                 $work_order->user_id= null;
+                $work_order->dealer_id= null;
                 $work_order->save();
             }
         }
