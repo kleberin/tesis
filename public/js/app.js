@@ -55176,7 +55176,7 @@ var content = __webpack_require__(185);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("78dc4eec", content, false, {});
+var update = __webpack_require__(5)("325be528", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -55543,7 +55543,7 @@ var content = __webpack_require__(192);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("9762adce", content, false, {});
+var update = __webpack_require__(5)("09541a99", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -67718,7 +67718,7 @@ var content = __webpack_require__(209);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("1fc515ea", content, false, {});
+var update = __webpack_require__(5)("5bfcc15d", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -68009,7 +68009,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this4 = this;
 
             this.cardTitle = 'Work Order Asignadas';
-            axios.default.get('work-order/asigd').then(function (response) {
+            axios.default.get('work-order/asigd' + this.dealerFilter).then(function (response) {
                 for (var i = 0; i < response.data.length; i++) {
                     _this4.markers.push({
                         position: { lat: parseFloat(response.data[i].latitude), lng: parseFloat(response.data[i].longitude) },
@@ -68118,7 +68118,7 @@ var content = __webpack_require__(213);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("111d80b9", content, false, {});
+var update = __webpack_require__(5)("d5d4ec28", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -68565,7 +68565,7 @@ var content = __webpack_require__(219);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("e4ff1cc2", content, false, {});
+var update = __webpack_require__(5)("cb09e75c", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -68833,7 +68833,7 @@ var content = __webpack_require__(224);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("6f227816", content, false, {});
+var update = __webpack_require__(5)("552d42b0", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -69075,7 +69075,7 @@ var content = __webpack_require__(229);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(5)("2ceb6a5f", content, false, {});
+var update = __webpack_require__(5)("d9f41a5c", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -69119,12 +69119,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       list: [],
-      classProp: ''
+      classProp: '',
+      current: [],
+      changed: false
     };
   },
   mounted: function mounted() {
@@ -69135,7 +69138,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         response.data[i].checked = true;
         _this.list.push(response.data[i]);
       }
-      _this.changeFilter();
+      _this.current = _this.list.filter(function (e) {
+        return e.checked;
+      }).map(function (e) {
+        return e.id;
+      });
+      _this.applyFilter();
     }).catch(function (error) {
       console.log(error);
     });
@@ -69148,7 +69156,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).map(function (e) {
         return e.id;
       });
-      if (this.list.length == selected.length) this.$emit('dealer_filter_changed');else this.$emit('dealer_filter_changed', selected);
+      if (!this.arraysEqual(selected, this.current)) this.changed = true;else this.changed = false;
+    },
+
+    arraysEqual: function arraysEqual(_arr1, _arr2) {
+      if (!Array.isArray(_arr1) || !Array.isArray(_arr2) || _arr1.length !== _arr2.length) return false;
+      var arr1 = _arr1.concat().sort();
+      var arr2 = _arr2.concat().sort();
+      for (var i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) return false;
+      }
+      return true;
+    },
+    applyFilter: function applyFilter() {
+      this.current = this.list.filter(function (e) {
+        return e.checked;
+      }).map(function (e) {
+        return e.id;
+      });
+      if (this.list.length == this.current.length) this.$emit('dealer_filter_changed');else this.$emit('dealer_filter_changed', this.current);
+      this.changed = false;
     }
   }
 });
@@ -69164,63 +69191,78 @@ var render = function() {
   return _c(
     "div",
     { class: [_vm.classProp, { "preserve-block": true }] },
-    _vm._l(_vm.list, function(dealer) {
-      return _c("div", { staticClass: "form-check" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: dealer.checked,
-              expression: "dealer.checked"
-            }
-          ],
-          staticClass: "form-check-input",
-          attrs: { type: "checkbox", id: "check.dealer." + dealer.id },
-          domProps: {
-            value: dealer.id,
-            checked: Array.isArray(dealer.checked)
-              ? _vm._i(dealer.checked, dealer.id) > -1
-              : dealer.checked
-          },
-          on: {
-            change: [
-              function($event) {
-                var $$a = dealer.checked,
-                  $$el = $event.target,
-                  $$c = $$el.checked ? true : false
-                if (Array.isArray($$a)) {
-                  var $$v = dealer.id,
-                    $$i = _vm._i($$a, $$v)
-                  if ($$el.checked) {
-                    $$i < 0 && _vm.$set(dealer, "checked", $$a.concat([$$v]))
+    [
+      _vm._l(_vm.list, function(dealer) {
+        return _c("div", { staticClass: "form-check" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: dealer.checked,
+                expression: "dealer.checked"
+              }
+            ],
+            staticClass: "form-check-input",
+            attrs: { type: "checkbox", id: "check.dealer." + dealer.id },
+            domProps: {
+              value: dealer.id,
+              checked: Array.isArray(dealer.checked)
+                ? _vm._i(dealer.checked, dealer.id) > -1
+                : dealer.checked
+            },
+            on: {
+              change: [
+                function($event) {
+                  var $$a = dealer.checked,
+                    $$el = $event.target,
+                    $$c = $$el.checked ? true : false
+                  if (Array.isArray($$a)) {
+                    var $$v = dealer.id,
+                      $$i = _vm._i($$a, $$v)
+                    if ($$el.checked) {
+                      $$i < 0 && _vm.$set(dealer, "checked", $$a.concat([$$v]))
+                    } else {
+                      $$i > -1 &&
+                        _vm.$set(
+                          dealer,
+                          "checked",
+                          $$a.slice(0, $$i).concat($$a.slice($$i + 1))
+                        )
+                    }
                   } else {
-                    $$i > -1 &&
-                      _vm.$set(
-                        dealer,
-                        "checked",
-                        $$a.slice(0, $$i).concat($$a.slice($$i + 1))
-                      )
+                    _vm.$set(dealer, "checked", $$c)
                   }
-                } else {
-                  _vm.$set(dealer, "checked", $$c)
-                }
-              },
-              _vm.changeFilter
-            ]
-          }
-        }),
-        _vm._v(" "),
-        _c(
-          "label",
-          {
-            staticClass: "form-check-label",
-            attrs: { for: "check.dealer." + dealer.id }
-          },
-          [_vm._v(_vm._s(dealer.name))]
-        )
-      ])
-    })
+                },
+                _vm.changeFilter
+              ]
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "label",
+            {
+              staticClass: "form-check-label",
+              attrs: { for: "check.dealer." + dealer.id }
+            },
+            [_vm._v(_vm._s(dealer.name))]
+          )
+        ])
+      }),
+      _vm._v(" "),
+      this.changed
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-sm btn-primary",
+              attrs: { type: "button" },
+              on: { click: this.applyFilter }
+            },
+            [_vm._v("Aplicar filtro")]
+          )
+        : _vm._e()
+    ],
+    2
   )
 }
 var staticRenderFns = []

@@ -254,7 +254,7 @@
             },
             loadAsigd() {
                 this.cardTitle = 'Work Order Asignadas';
-                axios.default.get('work-order/asigd')
+                axios.default.get(`work-order/asigd${this.dealerFilter}`)
                     .then(response => {
                         for (var i = 0; i < response.data.length; i++) {
                             this.markers.push({

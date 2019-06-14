@@ -38,7 +38,7 @@ class WorkOrderController extends Controller
         $to->addHours(29);
         $qb = $this->workOrderRepo
             ->join('customers', 'customers.id', 'work_orders.customer_id')
-            // ->join('users', 'users.id', )
+            ->join('users', 'users.id', 'work_orders.user_id')
             ->select('work_orders.id', 'work_orders.status', 'work_orders.date', 'customers.latitude', 'customers.longitude')
             ->where('status', 'Agendada')
             ->where('date', '>=', $from)
@@ -46,11 +46,11 @@ class WorkOrderController extends Controller
         
         if ($dealerIds == null) {
             $user = Auth::user();
-            // if ($user->role_id != 3)
-            //     $qb->where('users.dealer_id', $user->dealer_id);
+            if ($user->role_id != 3)
+                $qb->where('users.dealer_id', $user->dealer_id);
         }
         else {
-            // $qb->whereIn('users.dealer_id', $dealerIds);
+            $qb->whereIn('users.dealer_id', $dealerIds);
         }
 
         $data = $qb->get();        
@@ -71,13 +71,27 @@ class WorkOrderController extends Controller
         return response()->json($data);
     }
 
-    public function getAsigdData()
+    public function getAsigdData(Request $request)
     {
-        $data = $this->workOrderRepo
+        /** @var array $dealerIds */
+        $dealerIds = $request->query('dealerIds');
+
+        $qb = $this->workOrderRepo
             ->join('customers', 'customers.id', 'work_orders.customer_id')
+            ->join('dealers', 'dealers.id', 'work_orders.dealer_id')
             ->select('work_orders.id', 'work_orders.status', 'work_orders.date', 'customers.latitude', 'customers.longitude')
-            ->where('status', 'Asignada')
-            ->get();
+            ->where('status', 'Asignada');
+
+        if ($dealerIds == null) {
+            $user = Auth::user();
+            if ($user->role_id != 3)
+                $qb->where('dealers.id', $user->dealer_id);
+        }
+        else {
+            $qb->whereIn('dealers.id', $dealerIds);
+        }
+
+        $data = $qb->get();
         return response()->json($data);
     }
 }
