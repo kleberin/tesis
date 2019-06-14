@@ -67742,7 +67742,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\n.vue-map-container,\n.vue-map {\n    height: 100%;\n}\n#wrapper {\n    position: relative;\n}\n.floating {\n    position: absolute;\n    top: 10px;\n    left: 30px;\n    padding: 0 !important;\n}\n", ""]);
+exports.push([module.i, "\n.vue-map-container,\n.vue-map {\n    height: 100%;\n}\n#wrapper {\n    position: relative;\n}\n.floating {\n    position: absolute;\n    top: 10px;\n    left: 30px;\n    padding: 0 !important;\n}\n.close {\n    position: relative;\n    z-index: 999;\n}\n", ""]);
 
 // exports
 
@@ -67755,6 +67755,9 @@ exports.push([module.i, "\n.vue-map-container,\n.vue-map {\n    height: 100%;\n}
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TechnicianComponent_vue__ = __webpack_require__(211);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__TechnicianComponent_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__TechnicianComponent_vue__);
+//
+//
+//
 //
 //
 //
@@ -67966,10 +67969,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.path = [];
         },
 
-        closeWindow: function closeWindow(a, b, c) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
+        closeCard: function closeCard() {
+            this.closeWindow();
+            this.cardTitle = 'En Vivo';
+        },
+        closeWindow: function closeWindow() {
             this.infoWinOpen = false;
             this.currentComponent = null;
             this.currentComponentProps = null;
@@ -68437,6 +68441,22 @@ var render = function() {
                     "div",
                     { staticClass: "card-body" },
                     [
+                      this.markersStack.length === 0
+                        ? _c(
+                            "button",
+                            {
+                              staticClass: "close",
+                              attrs: { type: "button", "aria-label": "Close" },
+                              on: { click: this.closeCard }
+                            },
+                            [
+                              _c("span", { attrs: { "aria-hidden": "true" } }, [
+                                _vm._v("×")
+                              ])
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
                       _c(
                         _vm.currentComponent,
                         _vm._b(

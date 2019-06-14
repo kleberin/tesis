@@ -48,6 +48,9 @@
                         <div class="card-header">{{cardTitle}}</div>
 
                         <div class="card-body" v-if="currentComponent != null">
+                            <button type="button" class="close" aria-label="Close" v-if="this.markersStack.length === 0" @click="this.closeCard">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                             <component
                                     v-bind:is="currentComponent"
                                     v-bind="currentComponentProps"
@@ -213,10 +216,11 @@
                 this.markers = this.markersStack.pop();
                 this.path = [];
             },
-            closeWindow: function(a, b, c) {
-                console.log(a);
-                console.log(b);
-                console.log(c);
+            closeCard: function() {
+                this.closeWindow();
+                this.cardTitle = 'En Vivo';
+            },
+            closeWindow: function() {
                 this.infoWinOpen=false;
                 this.currentComponent = null;
                 this.currentComponentProps = null;
@@ -317,5 +321,9 @@
         top: 10px;
         left: 30px;
         padding: 0 !important;
+    }
+    .close {
+        position: relative;
+        z-index: 999;
     }
 </style>
