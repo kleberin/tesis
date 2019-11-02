@@ -68668,11 +68668,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this.loading = false;
                 } else {
                     _this.loading = false;
-                    _this.description = 'Ocurrio un error intente nuavamente';
+                    _this.description = 'Ocurrio un error intente nuevamente';
                 }
             }).catch(function (error) {
                 _this.loading = false;
-                _this.description = 'Ocurrio un error intente nuavamente';
+                _this.description = 'Ocurrio un error intente nuevamente';
             });
         },
         submitFile: function submitFile() {
@@ -68690,11 +68690,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this2.description = 'Leidos ' + response.data.count + ' registros';
                 } else {
                     _this2.loading = false;
-                    _this2.description = 'Ocurrio un error intente nuavamente';
+                    _this2.description = 'Ocurrio un error intente nuevamente';
                 }
             }).catch(function (error) {
                 _this2.loading = false;
-                _this2.description = 'Ocurrio un error intente nuavamente';
+                _this2.description = 'Ocurrio un error intente nuevamente';
             });
         }
     }
@@ -68945,11 +68945,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           }
         } else {
           _this.loading = false;
-          _this.description = 'Ocurrio un error intente nuavamente';
+          _this.description = 'Ocurrio un error intente nuevamente';
         }
       }).catch(function (error) {
         _this.loading = false;
-        _this.description = 'Ocurrio un error intente nuavamente';
+        _this.description = 'Ocurrio un error intente nuevamente';
       });
     }
   }

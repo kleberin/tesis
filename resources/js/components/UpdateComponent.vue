@@ -55,12 +55,12 @@
                 }
                 else {
                     this.loading = false;
-                    this.description = 'Ocurrio un error intente nuavamente';
+                    this.description = 'Ocurrio un error intente nuevamente';
                 }
             })
             .catch(error => {
                 this.loading = false;
-                this.description = 'Ocurrio un error intente nuavamente';
+                this.description = 'Ocurrio un error intente nuevamente';
             });
       },
     }
