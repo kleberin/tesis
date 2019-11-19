@@ -13,7 +13,7 @@ window.Vue = require('vue');
 
 Vue.use(VueGoogleMaps, {
     load: {
-        key: "AIzaSyCMeWeb5KUZk37Q1Puu2s_1qrka2B5CLhA"
+        key: ""
     }
 });
 
