@@ -48,7 +48,7 @@
             ).then(response => {
               console.log(response);
                 if (response.data.status === 'ok') {
-                    this.description = 'Leidos ' + response.data.count + ' registros';
+                    this.description = 'Leidos ' + response.data.count + ' registros. Continue en INICIO';
                     console.log('aaaaaa');
                     for (const wo_id in Object.keys(response.data.detail))
                       console.log(wo_id, response.data.detail[wo_id]);

@@ -98,7 +98,7 @@ class HomeController extends Controller
             }
         }
         
-        return response()->json(['count' => 30, 'status' => 'ok']);
+        return response()->json(['count' => 90, 'status' => 'ok']);
     }
 
     /**

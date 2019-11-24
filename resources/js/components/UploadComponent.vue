@@ -40,7 +40,7 @@
         axios.default.post('exec-sps',{})
           .then(response => {
             if (response.data.status === 'ok') {
-                this.description = 'Ordenes procesadas correctamente';
+                this.description = 'Ordenes procesadas correctamente. Continue en INICIO';
                 this.loading = false;
             }
             else {
@@ -66,7 +66,8 @@
             }
             ).then(response => {
                 if (response.data.status === 'ok') {
-                    this.description = 'Leidos ' + response.data.count + ' registros';
+                    this.description = 'Leidos ' + response.data.count + ' registros. Continue en Asignar';
+                   
                 }
                 else {
                     this.loading = false;
