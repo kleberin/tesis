@@ -20,7 +20,7 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
-        "moment": "^2.22.2",
+        "moment": "^2.29.2",
         "vue2-google-maps": "^0.10.2"
     }
 }
